@@ -1,34 +1,32 @@
 var express = require('express');
-
+var fs = require('fs')
+var bodyParser = require('body-parser');
 var app = express();
+var stringifyFile;
 
-app.get('/:id', function(req, res) {
-    console.log('Otrzymałem żądanie GET od strony głównej');
-    res.send('Identyfikator, który został dopisany to ' + req.params.id);
+
+app.use(bodyParser.json());
+
+
+app.get('/getNote', function(req, res) {
+    fs.readFile('./test.json', 'utf8', function(err, data) {
+    if (err) throw err;
+    stringifyFile = data
+    res.send(data);
+    });
 });
 
-app.post('/', function (req, res) {
-    console.log('Otrzymałem żądanie POST do strony głównej');
-    res.send('Hello Send');
-});
+app.post('/updateNote/:note', function(req, res) {
+    parsedFile = JSON.parse(stringifyFile);
+    parserFile.note = req.params.note;
+    stringifyFile = JSON.stringify(parsedFile);
+    
+    fs.writeFile('./test.json', stringifyFile, function(err) {
+        If (err) throw err;
+        console.log('file updated');
+        });
+    }
+);
 
-app.delete('/del_user', function(req, res) {
-    console.log('Otrzymałem żądanie DELETE do strony /del_user');
-    red.send('Hello DELETE');
-});
-
-app.get('/list_user', function (req, res) {
-    console.log('Otrzymałem żądanie GET do strony /list_user');
-    res.send('Strona z listą użytkowników!');
-});
-
-app.get('/ab*cd', function(req, res) {
-    console.log('Otrzymałem żądanie GET do strony /ab*cd');
-    res.send('Wzór pasuje');
-});
 
 app.listen(3000);
-
-app.use(function (req, res, next) {
-    res.status(404).send('Wybacz, nie mogliśmy odnaleźć tego, czego żądasz!')
-});
